@@ -43,13 +43,13 @@ jobs:
           mkdir -p "$GITHUB_WORKSPACE"/img_port
           for i in system product system_ext mi_ext odm; do
             echo "Extracting $i"
-            sudo "$GITHUB_WORKSPACE"/bin/payload_extract -i "$GITHUB_WORKSPACE"/update.zip -t zip --extract=${i} -o "$GITHUB_WORKSPACE"/mods
-            info=$(sudo python3 "$GITHUB_WORKSPACE"/bin/gettype.py "$GITHUB_WORKSPACE"/mods/$i.img)
+            sudo "$GITHUB_WORKSPACE"/tools/payload_extract -i "$GITHUB_WORKSPACE"/update.zip -t zip --extract=${i} -o "$GITHUB_WORKSPACE"/mods
+            info=$(sudo python3 "$GITHUB_WORKSPACE"/tools/gettype.py "$GITHUB_WORKSPACE"/mods/$i.img)
             echo "Decomposing $i ($info)"
             if [ "$info" == "ext" ]; then
-              sudo python3 "$GITHUB_WORKSPACE"/bin/imgextractorLinux.py "$GITHUB_WORKSPACE"/mods/$i.img "$GITHUB_WORKSPACE"/img_port >/dev/null
+              sudo python3 "$GITHUB_WORKSPACE"/tools/imgextractorLinux.py "$GITHUB_WORKSPACE"/mods/$i.img "$GITHUB_WORKSPACE"/img_port >/dev/null
             elif [ "$info" == "erofs" ]; then
-              sudo "$GITHUB_WORKSPACE"/bin/extract.erofs -i "$GITHUB_WORKSPACE"/mods/$i.img -o "$GITHUB_WORKSPACE"/img_port -x >/dev/null
+              sudo "$GITHUB_WORKSPACE"/tools/extract.erofs -i "$GITHUB_WORKSPACE"/mods/$i.img -o "$GITHUB_WORKSPACE"/img_port -x >/dev/null
             fi
             sudo rm -rf "$GITHUB_WORKSPACE"/mods/$i.img
           done
