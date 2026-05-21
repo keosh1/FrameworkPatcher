@@ -3,16 +3,16 @@ on:
   workflow_dispatch:
     inputs:
       URL:
-        description: "待提取文件的系统包下载地址"
+        description: "Download URL of the system package to extract files from"
         required: true
       file_name:
-        description: "待提取文件名称"
+        description: "Name of the file to extract"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: 最大化构建环境
+      - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
           swap-size-mb: 8192
@@ -21,9 +21,9 @@ jobs:
           remove-dotnet: 'true'
           remove-android: 'true'
           remove-haskell: 'true'
-      - name: 检出仓库文件
+      - name: Checkout repository
         uses: actions/checkout@main
-      - name: -准备环境
+      - name: Prepare environment
         run: |
           sudo timedatectl set-timezone Asia/Shanghai
           echo "URL=${{ github.event.inputs.URL }}" >> $GITHUB_ENV
@@ -38,15 +38,15 @@ jobs:
           pip3 install requests
           pip3 install beautifulsoup4
           pip3 install --ignore-installed pyyaml
-      - name: -制作rom
+      - name: Extract ROM files
         run: |
           aria2c -x16 -j$(nproc) -U "Mozilla/5.0" -d "$GITHUB_WORKSPACE" -o update.zip "${URL}"
           mkdir -p "$GITHUB_WORKSPACE"/img_port
           for i in system product system_ext mi_ext odm; do
-            echo "正在提取$i"
+            echo "Extracting $i"
             sudo "$GITHUB_WORKSPACE"/bin/payload_extract -i "$GITHUB_WORKSPACE"/update.zip -t zip --extract=${i} -o "$GITHUB_WORKSPACE"/mods
             info=$(sudo python3 "$GITHUB_WORKSPACE"/bin/gettype.py "$GITHUB_WORKSPACE"/mods/$i.img)
-            echo "正在分解$i($info)"
+            echo "Decomposing $i ($info)"
             if [ "$info" == "ext" ]; then
               sudo python3 "$GITHUB_WORKSPACE"/bin/imgextractorLinux.py "$GITHUB_WORKSPACE"/mods/$i.img "$GITHUB_WORKSPACE"/img_port >/dev/null
             elif [ "$info" == "erofs" ]; then
@@ -59,13 +59,13 @@ jobs:
           sudo find "$GITHUB_WORKSPACE"/img_port -type f -iname "*${file_name}*" -exec rsync -R {} "$tmpdir" \;
           sudo 7z a -tzip -mx0 "$GITHUB_WORKSPACE"/release/files.zip "$tmpdir"/*
           sudo rm -rf "$tmpdir"
-      - name: 📤 Post to Release (发布到 Release)
+      - name: Post to Release
         uses: softprops/action-gh-release@v1
         with:
           files: /home/runner/work/port_a15/port_a15/release/files.zip
           name: file_${{ github.event.inputs.file_name }}
           tag_name: file_${{ github.event.inputs.file_name }}
           body: |
-            - **提取文件:** ${{ github.event.inputs.file_name }}
+            - **Extracted file:** ${{ github.event.inputs.file_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
