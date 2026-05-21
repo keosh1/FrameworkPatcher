@@ -57,14 +57,21 @@ jobs:
             sudo rm -rf "$GITHUB_WORKSPACE"/mods/$i.img
           done
           mkdir -p "$GITHUB_WORKSPACE"/release
-          tmpdir=$(mktemp -d)
-          sudo find "$GITHUB_WORKSPACE"/img_port -type f -iname "*${file_name}*" -exec rsync -R {} "$tmpdir" \;
-          sudo 7z a -tzip -mx0 "$GITHUB_WORKSPACE"/release/files.zip "$tmpdir"/*
-          sudo rm -rf "$tmpdir"
+          # Copy matching files to release/ using just their basenames.
+          # On name collision, prefix with the parent directory to keep both copies.
+          sudo find "$GITHUB_WORKSPACE"/img_port -type f -iname "*${file_name}*" -print0 |
+            while IFS= read -r -d '' src; do
+              dest="$GITHUB_WORKSPACE/release/$(basename "$src")"
+              if [ -e "$dest" ]; then
+                parent=$(basename "$(dirname "$src")")
+                dest="$GITHUB_WORKSPACE/release/${parent}_$(basename "$src")"
+              fi
+              sudo cp "$src" "$dest"
+            done
       - name: Post to Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ github.workspace }}/release/files.zip
+          files: ${{ github.workspace }}/release/*
           name: file_${{ github.event.inputs.file_name }}
           tag_name: file_${{ github.event.inputs.file_name }}
           body: |
