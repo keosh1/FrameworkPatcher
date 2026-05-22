@@ -4,10 +4,10 @@
     "mondrian": {
       "OS3.0.5.0.VMNMIXM": {
         "android_version": "15",
-        "build_time": "2026-05-22T00:14:03Z",
+        "build_time": "2026-05-22T00:30:09Z",
         "patch_version": "3.0.0",
-        "release_url": "https://github.com/keosh1/FrameworkPatcher/releases/tag/build-tmp-26260587883",
-        "workflow_url": "https://github.com/keosh1/FrameworkPatcher/actions/runs/26260587883",
+        "release_url": "https://github.com/keosh1/FrameworkPatcher/releases/tag/build-tmp-26261121829",
+        "workflow_url": "https://github.com/keosh1/FrameworkPatcher/actions/runs/26261121829",
         "features": [
           "disable_signature_verification",
           "cn_notification_fix",
@@ -17,6 +17,6 @@
       }
     }
   },
-  "last_updated": "2026-05-22T00:14:42Z",
+  "last_updated": "2026-05-22T00:30:44Z",
   "engine_version": "3.0.0"
 }
