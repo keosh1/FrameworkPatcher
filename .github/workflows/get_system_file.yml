@@ -72,8 +72,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: ${{ github.workspace }}/release/*
-          name: file_${{ github.event.inputs.file_name }}
-          tag_name: file_${{ github.event.inputs.file_name }}
+          name: file_${{ github.event.inputs.file_name }}_${{ github.run_number }}
+          tag_name: file_${{ github.event.inputs.file_name }}_${{ github.run_number }}
           body: |
             - **Extracted file:** ${{ github.event.inputs.file_name }}
         env:
