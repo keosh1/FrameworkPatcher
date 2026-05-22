@@ -1,0 +1,27 @@
+{
+  "device": "mondrian",
+  "builds": {
+    "OS3.0.5.0.VMNMIXM": {
+      "android_version": "15",
+      "patch_version": "3.0.0",
+      "features": [
+        "disable_signature_verification",
+        "cn_notification_fix",
+        "disable_secure_flag",
+        "kaorios_toolbox"
+      ],
+      "build_time": "2026-05-22T00:14:03Z",
+      "git_commit": "79ab841",
+      "checksums": {
+        "framework_patched.jar": "sha256:9ba818fb110488ab5387035afe0a033373715f837fa0f70ed826409c57470020",
+        "services_patched.jar": "sha256:47097ef50be5ce9f88b7ac5ab217c29a3e8e994ca86c498b9f6650912ee850a1",
+        "miui-services_patched.jar": "sha256:a2ebefe299d9e5d251f9e47b1f51ddf9d0994adca1f26110506990216c5447ee",
+        "module_zip": "sha256:cd59bf0fbab25b42e81b63c46d226acf2de5892508175315a0333338ab8c4cbe"
+      },
+      "workflow_run_id": "26260587883",
+      "workflow_url": "https://github.com/keosh1/FrameworkPatcher/actions/runs/26260587883",
+      "release_url": "https://github.com/keosh1/FrameworkPatcher/releases/tag/build-tmp-26260587883"
+    }
+  },
+  "last_updated": "2026-05-22T00:14:42Z"
+}
