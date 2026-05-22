@@ -479,7 +479,14 @@ jobs:
 
       - name: Send Telegram Notification (Success)
         if: success() && github.event.inputs.user_id != ''
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ]; then
+            echo "::warning::TELEGRAM_BOT_TOKEN secret is not set; skipping notification."
+            exit 0
+          fi
+
           escape_mdv2() {
             echo "$1" | sed -e 's/\\/\\\\/g' -e 's/\./\\./g' -e 's/\-/\\-/g' -e 's/!/\\!/g' -e 's/#/\\#/g' -e 's/{/\\{/g' -e 's/}/\\}/g' -e 's/(/\\(/g' -e 's/)/\\)/g'
           }
@@ -499,7 +506,7 @@ jobs:
           
           REPLY_MARKUP="{\"inline_keyboard\":[[{\"text\":\"Click here to download\",\"url\":\"$RELEASE_URL\"}],[{\"text\":\"Support me\",\"url\":\"https://buymeacoffee.com/jefino\"}]]}"
 
-          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             -d chat_id=${{ github.event.inputs.user_id }} \
             -d text="$MESSAGE" \
             -d parse_mode="MarkdownV2" \
@@ -507,7 +514,14 @@ jobs:
 
       - name: Send Telegram Notification (Failure)
         if: failure() && github.event.inputs.user_id != ''
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ]; then
+            echo "::warning::TELEGRAM_BOT_TOKEN secret is not set; skipping notification."
+            exit 0
+          fi
+
           escape_mdv2() {
             echo "$1" | sed -e 's/\\/\\\\/g' -e 's/\./\\./g' -e 's/\-/\\-/g' -e 's/!/\\!/g' -e 's/#/\\#/g' -e 's/{/\\{/g' -e 's/}/\\}/g' -e 's/(/\\(/g' -e 's/)/\\)/g'
           }
@@ -529,7 +543,7 @@ jobs:
 
           REPLY_MARKUP="{\"inline_keyboard\":[[{\"text\":\"View Workflow Run\",\"url\":\"$WORKFLOW_URL\"}]]}"
 
-          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             -d chat_id=${{ github.event.inputs.user_id }} \
             -d text="$MESSAGE" \
             -d parse_mode="MarkdownV2" \
@@ -548,7 +562,7 @@ jobs:
             } > "$LOG_FILE"
           fi
 
-          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument" \
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument" \
             -F chat_id="${{ github.event.inputs.user_id }}" \
             -F document=@"$LOG_FILE" \
             -F caption="Android 15 failure log"
